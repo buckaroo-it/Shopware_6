@@ -65,13 +65,32 @@
         </service>
 
         <service id="Buckaroo\Shopware6\Service\RefundService">
-            <argument type="service" id="Buckaroo\Shopware6\Entity\Transaction\BuckarooTransactionEntityRepository"/>
-            <argument type="service" id="Buckaroo\Shopware6\Service\SettingsService"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\TransactionService"/>
+            <argument type="service" id="translator" />
+            <argument type="service" id="Buckaroo\Shopware6\Service\Refund\Builder"/>
+            <argument type="service" id="Buckaroo\Shopware6\Service\Refund\ResponseHandler"/>
+        </service>
+
+        <service id="Buckaroo\Shopware6\Service\ReturnService">
+            <argument type="service" id="Buckaroo\Shopware6\Service\TransactionService"/>
+            <argument type="service" id="translator" />
+            <argument type="service" id="Buckaroo\Shopware6\Service\Refund\Builder"/>
+            <argument type="service" id="Buckaroo\Shopware6\Service\Refund\ResponseHandler"/>
+            <argument type="service" id="Buckaroo\Shopware6\Entity\Transaction\BuckarooTransactionEntityRepository"/>
+        </service>
+
+        
+        <service id="Buckaroo\Shopware6\Service\Refund\Builder">
+            <argument type="service" id="Buckaroo\Shopware6\Service\Buckaroo\ClientService"/>
+            <argument type="service" id="Buckaroo\Shopware6\Service\SettingsService"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\UrlService"/>
+        </service>
+
+        <service id="Buckaroo\Shopware6\Service\Refund\ResponseHandler">
+            <argument type="service" id="Buckaroo\Shopware6\Entity\Transaction\BuckarooTransactionEntityRepository"/>
+            <argument type="service" id="Buckaroo\Shopware6\Service\TransactionService"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\StateTransitionService"/>
             <argument type="service" id="translator" />
-            <argument type="service" id="Buckaroo\Shopware6\Service\Buckaroo\ClientService"/>
         </service>
 
         <service id="Buckaroo\Shopware6\Service\CaptureService">
@@ -482,13 +501,21 @@
         </service>
 
 
-        <service id="Buckaroo\Shopware6\Subscribers\CheckoutConfirmTemplateSubscriber" >
+        <service id="Buckaroo\Shopware6\Subscribers\CheckoutConfirmTemplateSubscriber">
             <argument type="service" id="sales_channel.payment_method.repository"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\SettingsService"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\UrlService"/>
             <argument type="service" id="translator" />
             <argument type="service" id="Buckaroo\Shopware6\Service\PayByBankService"/>
             <argument type="service" id="Buckaroo\Shopware6\Service\In3LogoService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
+
+        <service id="Buckaroo\Shopware6\Subscribers\OrderReturnCreatedSubscriber">
+            <argument type="service" id="order_return.repository" on-invalid="null"/>
+            <argument type="service" id="Buckaroo\Shopware6\Service\ReturnService"/>
+            <argument type="service" id="Buckaroo\Shopware6\Helpers\Logger"/>
+            <argument type="service" id="Shopware\Administration\Notification\NotificationService" />
             <tag name="kernel.event_subscriber"/>
         </service>
 
